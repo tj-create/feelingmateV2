@@ -1,0 +1,18 @@
+jwt:
+  secret: "g^aPzk1!Wm8@GvL5%R7@zC#v9zJfU#YqA2K7Xm*tWqRb$XpJ!T^ePkCgY&uUwQoKm"
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/feelingmate
+    username: root
+    password: PTJdr1660*
+    driver-class-name: com.mysql.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create  # 또는 create, create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+
