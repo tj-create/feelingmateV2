@@ -28,6 +28,7 @@ dependencies {
     //spring boot
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.projectlombok:lombok:1.18.28'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     //jwt token
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
