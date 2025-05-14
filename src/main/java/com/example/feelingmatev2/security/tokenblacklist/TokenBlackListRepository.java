@@ -1,4 +1,4 @@
-package com.example.feelingmatev2.security;
+package com.example.feelingmatev2.security.tokenblacklist;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

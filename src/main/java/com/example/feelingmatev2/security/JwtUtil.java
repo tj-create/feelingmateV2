@@ -8,7 +8,10 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JwtUtil {
@@ -26,6 +29,7 @@ public class JwtUtil {
                 .setSubject(userName)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
+                .setId(UUID.randomUUID().toString())
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
@@ -39,4 +43,15 @@ public class JwtUtil {
                 .getSubject();
     }
 
+    public LocalDateTime getExtractExpiration(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration()
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+    }
 }

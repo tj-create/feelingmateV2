@@ -1,18 +1,25 @@
 package com.example.feelingmatev2.security;
 
+import com.example.feelingmatev2.security.tokenblacklist.TokenBlackList;
+import com.example.feelingmatev2.security.tokenblacklist.TokenBlackListRepository;
 import com.example.feelingmatev2.user.User;
 import com.example.feelingmatev2.user.UserRepository;
 import com.example.feelingmatev2.user.dto.LoginRequest;
 import com.example.feelingmatev2.user.dto.SignupRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final TokenBlackListRepository tokenBlackListRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -37,4 +44,10 @@ public class AuthService {
 
         return jwtUtil.generateToken(loginRequest.loginId());
     }
+
+    public void logout(String token) {
+        LocalDateTime extractExpiration = jwtUtil.getExtractExpiration(token);
+        tokenBlackListRepository.save(new TokenBlackList(token, extractExpiration));
+    }
+
 }

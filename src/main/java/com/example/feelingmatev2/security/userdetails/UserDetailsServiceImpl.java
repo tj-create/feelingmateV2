@@ -1,5 +1,6 @@
-package com.example.feelingmatev2.security;
+package com.example.feelingmatev2.security.userdetails;
 
+import com.example.feelingmatev2.security.UserDetailsImpl;
 import com.example.feelingmatev2.user.User;
 import com.example.feelingmatev2.user.UserRepository;
 import lombok.RequiredArgsConstructor;

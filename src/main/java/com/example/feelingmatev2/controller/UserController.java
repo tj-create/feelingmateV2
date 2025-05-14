@@ -1,11 +1,14 @@
 package com.example.feelingmatev2.controller;
 
 import com.example.feelingmatev2.security.AuthService;
+import com.example.feelingmatev2.security.UserDetailsImpl;
 import com.example.feelingmatev2.user.dto.LoginRequest;
 import com.example.feelingmatev2.user.dto.SignupRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,5 +38,27 @@ public class UserController {
         return ResponseEntity.ok(
                 Map.of("accessToken", token)
         );
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            HttpServletRequest request) {
+        String loginId = userDetails.getUsername();
+        System.out.println("loginId = " + loginId);
+        String token = extractToken(request);
+        authService.logout(token);
+
+        return ResponseEntity.ok("로그아웃 완료");
+    }
+
+    public String extractToken(HttpServletRequest request) {
+        String bearer = request.getHeader("Authorization");
+
+        if (bearer != null && bearer.startsWith("Bearer ")) {
+            return bearer.substring(7); // "Bearer " 이후 부분만 잘라냄
+        }
+
+        return null; // 또는 예외 처리
     }
 }
