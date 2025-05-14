@@ -2,6 +2,7 @@ package com.example.feelingmatev2.diary;
 
 import com.example.feelingmatev2.diary.dto.DiaryRequest;
 import com.example.feelingmatev2.emotion.EmotionResult;
+import com.example.feelingmatev2.emotion.EmotionType;
 import com.example.feelingmatev2.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -52,5 +53,13 @@ public class Diary {
 
     public void setEmoji(String selectEmoji) {
         this.selectedEmoji = selectEmoji;
+    }
+
+    public Diary update(DiaryRequest diaryRequest) {
+        this.title = diaryRequest.title();
+        this.content = diaryRequest.content();
+        this.recommendOn = diaryRequest.recommendOn();
+
+        return this;
     }
 }

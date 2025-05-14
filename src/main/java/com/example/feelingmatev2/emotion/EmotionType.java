@@ -1,4 +1,4 @@
-package com.example.feelingmatev2.diary;
+package com.example.feelingmatev2.emotion;
 
 import lombok.Getter;
 

@@ -1,7 +1,7 @@
 package com.example.feelingmatev2.diary.dto;
 
 import com.example.feelingmatev2.diary.Diary;
-import com.example.feelingmatev2.diary.EmotionType;
+import com.example.feelingmatev2.emotion.EmotionType;
 
 import java.time.LocalDateTime;
 

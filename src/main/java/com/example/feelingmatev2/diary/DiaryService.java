@@ -9,6 +9,11 @@ import com.example.feelingmatev2.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.stylesheets.LinkStyle;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -46,8 +51,48 @@ public class DiaryService {
     }
 
     // 조회 (하나 조회, 전체 조회)
+    public DiaryResponse selectDiaryById(String loginId, Long diaryId) {
+        User user = userRepository.findUserByLoginId(loginId).orElseThrow(
+                () -> new IllegalStateException("사용자를 찾을 수 없습니다.")
+        );
+        Diary diary = diaryRepository.findDiaryByUserAndId(user, diaryId);
+
+        return DiaryResponse.from(diary);
+    }
+
+    public List<DiaryResponse> selectDiaryAll(String loginId) {
+        User user = userRepository.findUserByLoginId(loginId).orElseThrow(
+                () -> new IllegalStateException("사용자를 찾을 수 없습니다.")
+        );
+
+        return diaryRepository.findAllByUser(user).stream()
+                .map(DiaryResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
     // 수정
+    public DiaryResponse updateDiary(String loginId, Long diaryId, DiaryRequest diaryRequest) {
+        User user = userRepository.findUserByLoginId(loginId).orElseThrow(
+                () -> new IllegalStateException("사용자를 찾을 수 없습니다.")
+        );
+        Diary diary = diaryRepository.findDiaryByUserAndId(user, diaryId);
+
+        Diary updatedDiary = diary.update(diaryRequest);
+
+        return DiaryResponse.from(updatedDiary);
+    }
+
+    @Transactional
     // 삭제
+    public void deleteDiary(String loginId, Long diaryId) {
+        User user = userRepository.findUserByLoginId(loginId).orElseThrow(
+                () -> new IllegalStateException("사용자를 찾을 수 없습니다.")
+        );
+        Diary diary = diaryRepository.findDiaryByUserAndId(user, diaryId);
+
+        diaryRepository.delete(diary);
+    }
 
 
 }

@@ -1,6 +1,5 @@
 package com.example.feelingmatev2.emotion;
 
-import com.example.feelingmatev2.diary.EmotionType;
 import org.springframework.stereotype.Service;
 
 @Service
