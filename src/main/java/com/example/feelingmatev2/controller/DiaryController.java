@@ -7,10 +7,9 @@ import com.example.feelingmatev2.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,10 +22,52 @@ public class DiaryController {
     public ResponseEntity<DiaryResponse> createDiary(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody DiaryRequest diaryRequest
-            ) {
+    ) {
 
         String loginId = userDetails.getUsername();
         DiaryResponse diaryResponse = diaryService.createDiary(loginId, diaryRequest);
         return ResponseEntity.ok(diaryResponse);
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<List<DiaryResponse>> getAllDiaries(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        String loginId = userDetails.getUsername();
+        List<DiaryResponse> diaryResponses = diaryService.selectDiaryAll(loginId);
+        return ResponseEntity.ok(diaryResponses);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DiaryResponse> getDiaryById(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long id
+    ) {
+        String loginId = userDetails.getUsername();
+        DiaryResponse diaryResponse = diaryService.selectDiaryById(loginId, id);
+        return ResponseEntity.ok(diaryResponse);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DiaryResponse> updateDiary(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long id,
+            @RequestBody DiaryRequest diaryRequest
+    ) {
+        String loginId = userDetails.getUsername();
+        DiaryResponse diaryResponse = diaryService.updateDiary(loginId, id, diaryRequest);
+
+        return ResponseEntity.ok(diaryResponse);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDiary(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long id
+    ) {
+        String loginId = userDetails.getUsername();
+        diaryService.deleteDiary(loginId, id);
+
+        return ResponseEntity.noContent().build();
     }
 }
