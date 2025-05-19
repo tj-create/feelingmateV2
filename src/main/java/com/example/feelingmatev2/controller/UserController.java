@@ -44,12 +44,14 @@ public class UserController {
     public ResponseEntity<String> logout(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             HttpServletRequest request) {
-        String loginId = userDetails.getUsername();
-        System.out.println("loginId = " + loginId);
-        String token = extractToken(request);
-        authService.logout(token);
+        if (userDetails.getUsername() != null) {
+            String token = extractToken(request);
+            authService.logout(token);
 
-        return ResponseEntity.ok("로그아웃 완료");
+            return ResponseEntity.ok("로그아웃 완료");
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다.");
     }
 
     public String extractToken(HttpServletRequest request) {

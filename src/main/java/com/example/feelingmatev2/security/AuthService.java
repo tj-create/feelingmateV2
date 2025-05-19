@@ -36,7 +36,6 @@ public class AuthService {
 
     public String login(LoginRequest loginRequest) {
         User findUser = userRepository.findUserByLoginId(loginRequest.loginId()).orElseThrow(() -> new RuntimeException("아이디 또는 비밀번호가 일치하지 않습니다."));
-        System.out.println("password = " + findUser.getPassword());
 
         if (!passwordEncoder.matches(loginRequest.password(), findUser.getPassword())) {
             throw new IllegalStateException("아이디 또는 비밀번호가 일치하지 않습니다.");
