@@ -2,6 +2,7 @@ package com.example.feelingmatev2.diary;
 
 import com.example.feelingmatev2.diary.dto.DiaryRequest;
 import com.example.feelingmatev2.diary.dto.DiaryResponse;
+import com.example.feelingmatev2.diary.emoji_dto.EmojiOptionResponse;
 import com.example.feelingmatev2.emotion.EmotionResult;
 import com.example.feelingmatev2.emotion.EmotionService;
 import com.example.feelingmatev2.user.User;
@@ -9,10 +10,8 @@ import com.example.feelingmatev2.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,12 +41,13 @@ public class DiaryService {
     }
 
     @Transactional
-    public void selectEmoji(Long diaryId, String selectEmoji) {
-        Diary diary = diaryRepository.findById(diaryId).orElseThrow(
-                () -> new IllegalStateException("해당 일기를 찾을 수 없습니다.")
+    public void selectEmoji(String loginId, Long diaryId, String selectEmoji) {
+        User user = userRepository.findUserByLoginId(loginId).orElseThrow(
+                () -> new IllegalStateException("사용자를 찾을 수 없습니다.")
         );
+        Diary diary = diaryRepository.findDiaryByUserAndId(user, diaryId);
 
-        diary.setEmoji(selectEmoji);
+        diary.setEmoji("🥰"); // 나중에 수정해야댐 예시~
     }
 
     // 조회 (하나 조회, 전체 조회)
@@ -95,4 +95,14 @@ public class DiaryService {
     }
 
 
+    public EmojiOptionResponse getEmotionResult(String loginId, Long diaryId) {
+
+        User user = userRepository.findUserByLoginId(loginId).orElseThrow(
+                () -> new IllegalStateException("잘못된 유저")
+        );
+
+        Diary diary = diaryRepository.findDiaryByUserAndId(user, diaryId);
+
+        return new EmojiOptionResponse(new EmotionResult(diary.getMainEmotion(), diary.getSubEmotion(), diary.getEmotionScore()), diary.getMainEmotion().getEmojis());
+    }
 }

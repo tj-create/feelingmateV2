@@ -3,6 +3,9 @@ package com.example.feelingmatev2.controller;
 import com.example.feelingmatev2.diary.DiaryService;
 import com.example.feelingmatev2.diary.dto.DiaryRequest;
 import com.example.feelingmatev2.diary.dto.DiaryResponse;
+import com.example.feelingmatev2.diary.emoji_dto.EmojiOptionResponse;
+import com.example.feelingmatev2.diary.emoji_dto.EmojiSelectionRequest;
+import com.example.feelingmatev2.emotion.EmotionService;
 import com.example.feelingmatev2.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,7 @@ import java.util.List;
 public class DiaryController {
 
     private final DiaryService diaryService;
+    private final EmotionService emotionService;
 
     @PostMapping
     public ResponseEntity<DiaryResponse> createDiary(
@@ -69,5 +73,29 @@ public class DiaryController {
         diaryService.deleteDiary(loginId, id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/emoji-option")
+    public ResponseEntity<EmojiOptionResponse> getEmotionResult(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long id
+    ) {
+        String loginId = userDetails.getUsername();
+
+        EmojiOptionResponse emotionResult = diaryService.getEmotionResult(loginId, id);
+
+        return ResponseEntity.ok(emotionResult);
+    }
+
+    @PatchMapping("/{id}/emoji-option")
+    public ResponseEntity<Void> selectEmoji(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long id,
+            @RequestBody EmojiSelectionRequest request
+    ) {
+
+        String loginId = userDetails.getUsername();
+        diaryService.selectEmoji(loginId, id, request.selectedEmoji());
+        return ResponseEntity.ok().build();
     }
 }
